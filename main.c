@@ -31,11 +31,8 @@
 
 typedef struct	s_flags
 {
-	bool	c;
-	bool	a;
-	bool	o;
-	bool	b;
-	bool	h;
+	char	from;
+	char	to;
 }	t_flags;
 
 // error
@@ -48,38 +45,21 @@ int	error(int code)
 
 
 
-// flags getting and initialising
+// flags initialising
 void	init_flags(t_flags *flags)
 {
-	flags->c = false;
-	flags->a = false;
-	flags->o = false;
-	flags->b = false;
-	flags->h = false;
+	flags->from == 'c';
+	flags->to = 'b';
 }
 
-int	setting_flag(t_flags *flags, char c)
-{
-	if (c == 'c' && flags->c == false)
-		flags->c = true;
-	else if (c == 'a' && flags->a == false)
-		flags->a = true;
-	else if (c == 'o' && flags->o == false)
-		flags->o = true;
-	else if (c == 'b' && flags->b == false)
-		flags->b = true;
-	else if (c == 'h' && flags->h == false)
-		flags->h = true;
-	else
-		return (0);
-	return (1);
-}
-
+// gets from and to flags
+// DOES NOT SET IF NO FLAGS ARE FOUND
 int	get_flags(t_flags *flags, char **av)
 {
-	int	i;
-	int	j;
-	int	flag_found;
+	int		i;
+	int		j;
+	int		flag_found;
+	char	*temp;
 
 	i = -1;
 	flag_found = 0;
@@ -88,27 +68,52 @@ int	get_flags(t_flags *flags, char **av)
 	{
 		if (av[i][0] == '-')
 		{
-			j = 1;
-			while (av[i][j])
+			j = 0;
+			while (av[i][++j])
 			{
-				if (!setting_flag(flags, av[i][j++]))
-					return (1);
-				else
-					flag_found++;
+				temp = strchr("caobh", av[i][j]);
+				if (!temp)
+					return (0);
+				if (flag_found == 0)
+					flags->from = temp[0];
+				else if (flag_found == 1)
+					flags->to = temp[0];
+				flag_found++;
 			}
 		}
 	}
 	if (flag_found > 2)
-		return (1);
-	return (0);
+		return (0);
+	return (1);
 }
 
+int	args_check(int ac, char **av)
+{
+	int	i;
+	int	flag_found;
+
+	i = 0;
+	flag_found = 0;
+	if (ac > 4)
+		return (0);
+	while (av[i])
+	{
+		if (av[i][0] == '-')
+			flag_found++;
+		i++;
+	}
+	if ((flag_found != 2 && i == 4) || (flag_found != 1 && i == 3))
+		return (0);
+	return (1);
+}
+
+// problem now is that im trying to figure out a way to check if the arguments are correct
 int main(int ac, char **av)
 {
 	t_flags	flags;
 
     
-	if (ac > 3 && !get_flags(&flags, av))
+	if (!args_check(ac, av) || !get_flags(&flags, av))
 		return (error(1));
 	
 }
