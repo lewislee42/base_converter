@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lewlee <lewlee@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/05 13:11:35 by codespace         #+#    #+#             */
-/*   Updated: 2023/09/05 13:16:11 by codespace        ###   ########.fr       */
+/*   Updated: 2023/09/10 17:32:45 by lewlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,51 +117,107 @@ int	args_check(int ac, char **av)
 	return (1);
 }
 
-// function should convert 
-int	*convert_from_binary(char **arr)
+int	*convert_to_ascii(char *str)
 {
-	int	*r_arr = malloc(count_rows(arr) * sizeof(int));
-	int	temp_int = 0;
-	int	i = 0;
-	int j;
-	int	bit_shift;
-
+	int i = -1;
+	int	*r_arr = malloc((ft_strlen(str) + 1) * sizeof(int));
 	if (!r_arr)
-		return (NULL);
-	while (arr[i])
+		return (0);
+	while (str[++i])
+		r_arr[i] = (int)str[i];
+	r_arr[i] = NULL;
+	return (r_arr);
+}
+
+int	ft_power(int nb, int power)
+{
+	int	i;
+	int	num;
+
+	i = 0;
+	num = nb;
+	if (power < 0)
+		return (0);
+	if (power == 0)
+		return (1);
+	while (++i < power)
+		nb = nb * num;
+	return (nb);
+}
+
+int	convert_to_decimal(char *nbr, char *base)
+{
+	int	i = ft_strlen(nbr) - 1;
+	int j;
+	int k = 0;
+	int	num = 0;
+	int	baselen = ft_strlen(base);
+
+	while (nbr[i])
 	{
-		j = 0;
-		bit_shift = 0;
-		while (arr[i][j])
-		{
-			temp_int |= (arr[i][j] - 48 & 1) << bit_shift++;
-		}
+		j = nbr[k++];
+		if (j >= 97 && j <= 122)
+			j -= 87;
+		else if (j >= 65 && j <= 90)
+			j -= 55;
+		else
+			j -= 48;
+		num = num + (j * ft_power(baselen, i--));
 	}
+	return (num);
+}
+
+void	free2dchar(char **arr)
+{
+	int i = 0;
+	while (arr[i])
+		free(arr[i]);
+	free(arr);
 }
 
 int	*convert_to_int_arr(t_flags *flags, char *str)
 {
-	char **temp_str;
+	int	*temp_arr;
 
 	if (flags->from == 'c')
-	{
-		// convert from char by char
-		// idk yet
-	}
+		temp_arr = convert_to_ascii(str);
 	else
 	{
-		temp_str = ft_split(str, ' ');
-		//
+		temp_arr = ft_split(str, ' ');
+		
+		if (!temp_arr)
+			return (NULL);
 	}
+	
 }
 
 // problem now is that im trying to figure out a way to check if the arguments are correct
-int main(int ac, char **av)
-{
-	t_flags	flags;
+// int main(int ac, char **av)
+// {
+// 	t_flags	flags;
 
-	if (!args_check(ac, av) || !get_flags(&flags, av))
-		return (error(1));
+// 	if (!args_check(ac, av) || !get_flags(&flags, av))
+// 		return (error(1));
 	
-	// trying figure out how to convert it smoothly
+// 	// trying figure out how to convert it smoothly
+// }
+
+
+
+int main(void)
+{
+	// char **data = malloc(6 * sizeof(char *));
+	// data[0] = strdup("0001");
+	// data[1] = strdup("0011");
+	// data[2] = strdup("0010");
+	// data[3] = strdup("0100");
+	// data[4] = strdup("1000");
+	// data[5] = NULL;
+	// int *i = convert_from_binary(data);
+	// int j = 0;
+	// while (i[j])
+	// 	printf("i[%d] = %d\n", j, i[j++]);
+
+	int i = ft_int("0110", "01");
+	printf("%d\n", i);
 }
