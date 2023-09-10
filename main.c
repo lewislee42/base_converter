@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include "libft.h"
 
 // -a for ascii
 // -o for octal
@@ -35,7 +36,7 @@ typedef struct	s_flags
 	char	to;
 }	t_flags;
 
-// error
+// error will print out error messages base of the code given
 int	error(int code)
 {
 	if (code == 1)
@@ -43,9 +44,18 @@ int	error(int code)
 	return (1);
 }
 
+int	count_rows(char **arr)
+{
+	int i;
 
+	i = 0;
+	while (arr[i])
+		i++;
+	return (i);
+}
 
-// flags initialising
+// flags init
+// since default will be from character to binary so we set it to from = c and to = b
 void	init_flags(t_flags *flags)
 {
 	flags->from == 'c';
@@ -107,13 +117,51 @@ int	args_check(int ac, char **av)
 	return (1);
 }
 
+// function should convert 
+int	*convert_from_binary(char **arr)
+{
+	int	*r_arr = malloc(count_rows(arr) * sizeof(int));
+	int	temp_int = 0;
+	int	i = 0;
+	int j;
+	int	bit_shift;
+
+	if (!r_arr)
+		return (NULL);
+	while (arr[i])
+	{
+		j = 0;
+		bit_shift = 0;
+		while (arr[i][j])
+		{
+			temp_int |= (arr[i][j] - 48 & 1) << bit_shift++;
+		}
+	}
+}
+
+int	*convert_to_int_arr(t_flags *flags, char *str)
+{
+	char **temp_str;
+
+	if (flags->from == 'c')
+	{
+		// convert from char by char
+		// idk yet
+	}
+	else
+	{
+		temp_str = ft_split(str, ' ');
+		//
+	}
+}
+
 // problem now is that im trying to figure out a way to check if the arguments are correct
 int main(int ac, char **av)
 {
 	t_flags	flags;
 
-    
 	if (!args_check(ac, av) || !get_flags(&flags, av))
 		return (error(1));
 	
+	// trying figure out how to convert it smoothly
 }
